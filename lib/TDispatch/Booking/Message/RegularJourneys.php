@@ -19,28 +19,11 @@
  ******************************************************************************
 */
 
-namespace TDispatch\Booking\Request;
+namespace TDispatch\Booking\Message;
 
 use TDispatch\Booking\TDispatch as TDispatch;
 
-class API {
-
-    public function API_getInfo(TDispatch $td) {
-        $data = array(
-            "access_token" => $td->getToken()
-        );
-
-        $url = $td->getFullApiUrl() . 'api-info?' . http_build_query($data);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        curl_close($ch);
-
-        return json_decode($result, true);
-    }
+class RegularJourneys {
+	// dummy
 
 }

@@ -19,45 +19,28 @@
  ******************************************************************************
 */
 
-namespace TDispatch\Booking\Request;
+namespace TDispatch\Booking\Message;
 
 use TDispatch\Booking\TDispatch as TDispatch;
 
-class Drivers {
+class API {
 
-    public function nearby(TDispatch $td, $limit, $location, $radius, $offset) {
+    public function API_getInfo(TDispatch $td) {
         $data = array(
             "access_token" => $td->getToken()
         );
 
-        $url = $td->getFullApiUrl() . 'drivers/nearby?' . http_build_query($data);
+        $url = $td->getFullApiUrl() . 'api-info?' . http_build_query($data);
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
-
-
-        $dataSend = array(
-            'limit' => $limit,
-            'location' => $location,
-            'radius' => $radius,
-            'offset' => $offset
-        );
-
-        curl_setopt($ch, CURLOPT_POST, count($dataSend));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataSend));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
         $result = curl_exec($ch);
-        $res = json_decode($result, true);
         $info = curl_getinfo($ch);
         curl_close($ch);
 
-        if (!isset($res['status']) || $res['status'] !== 'OK') {
-            $td->setError($res);
-            return false;
-        }
-
-        return $res['drivers'];
+        return json_decode($result, true);
     }
 
 }

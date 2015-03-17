@@ -21,6 +21,8 @@
 
 namespace TDispatch\Booking;
 
+use TDispatch\Booking\Message as Message;
+
 class TDispatch {
 
     public $api_key;
@@ -56,13 +58,13 @@ class TDispatch {
 
         $this->baseURL = Config::getApiBaseUrl();
 
-        $this->oauth = new OAuth($this, $this->api_key, $this->api_cliente_id, $this->api_secret);
-        $this->booking = new Bookings;
-        $this->accounts = new Account;
-        $this->location = new LocationSearch;
-        $this->fareCalculation = new FareCalculation;
-        $this->vehicles = new Vehicles;
-        $this->drivers = new Drivers;
+        $this->oauth = new Message\OAuth($this, $this->api_key, $this->api_cliente_id, $this->api_secret);
+        $this->booking = new Message\Bookings;
+        $this->accounts = new Message\Account;
+        $this->location = new Message\LocationSearch;
+        $this->fareCalculation = new Message\FareCalculation;
+        $this->vehicles = new Message\Vehicles;
+        $this->drivers = new Message\Drivers;
 
         $this->getToken();
     }
@@ -101,7 +103,7 @@ class TDispatch {
         if ($this->api) {
             return $this->api;
         }
-        $api = new API();
+        $api = new Message\API();
         $info = $api->API_getInfo($this);
         $this->api = $info;
         return $info;

@@ -19,23 +19,34 @@
  ******************************************************************************
 */
 
-namespace TDispatch\Booking\Request;
+namespace TDispatch\Booking\Message;
 
 use TDispatch\Booking\TDispatch as TDispatch;
 
-class Vehicles {
+class Drivers {
 
-    public function vehicles_list(TDispatch $td, $limit = 4) {
+    public function nearby(TDispatch $td, $limit, $location, $radius, $offset) {
         $data = array(
             "access_token" => $td->getToken()
         );
 
-        $url = $td->getFullApiUrl() . 'vehicletypes?' . http_build_query($data);
-
+        $url = $td->getFullApiUrl() . 'drivers/nearby?' . http_build_query($data);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
+
+
+        $dataSend = array(
+            'limit' => $limit,
+            'location' => $location,
+            'radius' => $radius,
+            'offset' => $offset
+        );
+
+        curl_setopt($ch, CURLOPT_POST, count($dataSend));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataSend));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
         $result = curl_exec($ch);
         $res = json_decode($result, true);
         $info = curl_getinfo($ch);
@@ -46,7 +57,7 @@ class Vehicles {
             return false;
         }
 
-        return array_slice($res['vehicle_types'], 0, $limit);
+        return $res['drivers'];
     }
 
 }
