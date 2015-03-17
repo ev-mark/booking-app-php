@@ -19,6 +19,10 @@
  ******************************************************************************
 */
 
+namespace TDispatch\Booking\Request;
+
+use TDispatch\Booking\TDispatch as TDispatch;
+
 class Account {
     /*
      * create()
@@ -260,7 +264,7 @@ class Account {
         $dataSend = array(
             "email" => $email,
             "confirm_url"=>$td->getHomeUrl().$td->resetPasswordCallbackPage.'?token={token}'
-        ); 
+        );
         curl_setopt($ch, CURLOPT_POST, count($dataSend));
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataSend));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

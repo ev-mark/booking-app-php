@@ -19,6 +19,10 @@
  ******************************************************************************
 */
 
+namespace TDispatch\Booking\Request;
+
+use TDispatch\Booking\TDispatch as TDispatch;
+
 class Drivers {
 
     public function nearby(TDispatch $td, $limit, $location, $radius, $offset) {

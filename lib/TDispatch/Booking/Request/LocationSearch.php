@@ -19,24 +19,37 @@
  ******************************************************************************
 */
 
-class API {
+namespace TDispatch\Booking\Request;
 
-    public function API_getInfo($td) {
+use TDispatch\Booking\TDispatch as TDispatch;
+
+class LocationSearch {
+
+    public function search(TDispatch $td, $q = "", $limit = 10, $type = "") {
         $data = array(
-            "access_token" => $td->getToken()
+            "access_token" => $td->getToken(),
+            "q" => $q, //	string	Query string to search locations. Required
+            "limit" => $limit, //	int	Limit number of locations. Optional
+            "type" => $type //	string	Should be 'pickup' if location is going to be used for a pickup. Optional.
         );
 
-        $url = $td->getFullApiUrl() . 'api-info?' . http_build_query($data);
-
+        $url = $td->getFullApiUrl() . 'locations/search?' . http_build_query($data);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
         $result = curl_exec($ch);
+        $res = json_decode($result, true);
         $info = curl_getinfo($ch);
         curl_close($ch);
 
-        return json_decode($result, true);
+        if (!isset($res['status']) || $res['status'] !== 'OK') {
+            $td->setError($res);
+            return false;
+        }
+
+        return $res;
     }
 
 }

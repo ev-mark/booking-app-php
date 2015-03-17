@@ -19,6 +19,8 @@
  ******************************************************************************
 */
 
+namespace TDispatch\Booking\Request;
+
 class CURL {
 
     var $ch = null;

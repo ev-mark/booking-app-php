@@ -19,39 +19,34 @@
  ******************************************************************************
 */
 
-class FareCalculation {
+namespace TDispatch\Booking\Request;
 
-    public function fare(TDispatch $td, $pickup_postcode, $dropoff_postcode,$pickup_time, $pickup = array(), $dropoff = array(),$vehicle_type= '', $waypoints = array()) {
+use TDispatch\Booking\TDispatch as TDispatch;
+
+class Vehicles {
+
+    public function vehicles_list(TDispatch $td, $limit = 4) {
         $data = array(
             "access_token" => $td->getToken()
         );
 
-        $url = $td->getFullApiUrl() . 'locations/fare?' . http_build_query($data);
+        $url = $td->getFullApiUrl() . 'vehicletypes?' . http_build_query($data);
 
         $ch = curl_init();
-
-        $dataSend = array(
-            'pickup_postcode' => $pickup_postcode,
-            'dropoff_postcode' => $dropoff_postcode,
-            'pickup_time' => $pickup_time,
-            'pickup_location' => $pickup,
-            'dropoff_location' => $dropoff,
-			'car_type' =>$vehicle_type,
-            'waypoints' => $waypoints
-			
-        );
-
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, count($dataSend));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dataSend));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $result = curl_exec($ch);
+        $res = json_decode($result, true);
         $info = curl_getinfo($ch);
-
         curl_close($ch);
 
-        return json_decode($result, true);
+        if (!isset($res['status']) || $res['status'] !== 'OK') {
+            $td->setError($res);
+            return false;
+        }
+
+        return array_slice($res['vehicle_types'], 0, $limit);
     }
 
 }

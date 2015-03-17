@@ -19,6 +19,9 @@
  ******************************************************************************
 */
 
+namespace TDispatch\Booking\Request;
+use TDispatch\Booking\TDispatch as TDispatch;
+
 class Bookings {
 
     public function Bookings_list(TDispatch $td, $order_by = "", $status = "", $pickup_time = "", $limit = "", $offset = 0) {

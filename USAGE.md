@@ -1,13 +1,13 @@
-TDispatch Library for PHP
-=====================================
-
-== Basic Example for usage
-
+# Basic usage
+```php
   <?php
     require_once 'path/to/src/tdispatch/tdispatch.php';
     $tdispatch = new TDispatch();
+```
 
-== List Methods for $tdispatch you can use, the explain in the bottom (check topic: == Details for each method )
+# Method List
+```php
+<?php
 $tdispatch->getToken(); //return token for api use
 $tdispatch->getApiKey(); //return api key
 $tdispatch->getClientId(); //return cliente id
@@ -19,7 +19,6 @@ $tdispatch->getErrorCode();// //get last error code
 $tdispatch->api_info(); //Returns basic information about the current API session.
 $tdispatch->Account_create(); //create a new account
 $tdispatch->api_info(); //get api info
-
 $tdispatch->Account_create($passenger); //create new user
 $tdispatch->Account_login($user, $password); //do login
 $tdispatch->Account_logout(); //do logout
@@ -29,7 +28,6 @@ $tdispatch->Account_getFleetdata();  //get fleet data
 $tdispatch->Account_resetPassword($email);  //reset password request
 $tdispatch->Account_changePassword($data);  //change password
 $tdispatch->Account_checkLogin(); //check if user is authenticated
-
 $tdispatch->Bookings_list($order_by,$status,$pickup_time,$limit,$offset); //list all bookings
 $tdispatch->Bookings_create($customer, $passenger, $pickup_time, $return_pickup_time, $pickup_location, $way_points, $dropoff_location, $vehicle_type, $extra_instructions, $luggage, $passengers, $payment_method, $prepaid, $status, $price_rule,$customs);//create new booking
 $tdispatch->Bookings_get($bookingPk); //get booking data
@@ -38,17 +36,15 @@ $tdispatch->Bookings_cancel($bookingPk, $description); //cancel a booking
 $tdispatch->Bookings_receipt($bookingPk); //download receipt
 $tdispatch->Bookings_tracking($bookings); //track booking
 $tdispatch->Bookings_getCustom();//get custom fields
-
 $tdispatch->Vehicles_list($limit); //get vehicle list
-
 $tdispatch->Drivers_nearby($limit, $location, $radius, $offset); //get nearby drivers
+```
 
-
-== Details for each method
-
-/* API FUNCTIONS */
-
-//Basic methods used inside other methods
+# Details
+## API Functions
+### Basic Methods
+```php
+<?php
 $tdispatch->getToken(); //return token for api use
 $tdispatch->getApiKey(); //return api key
 $tdispatch->getClientId(); //return cliente id
@@ -57,63 +53,72 @@ $tdispatch->getFullOAuthUrl(); // return oauth api url, used for make oauth api 
 $tdispatch->getHomeUrl(); // return your site base url
 $tdispatch->getErrorMessage(); //get last error message
 $tdispatch->getErrorCode();// //get last error code
+```
 
-//API Info
-//$tdispatch->api_info();
-//Returns basic information about the current API session.
-//@return (object) json object
-//Returns an json object like this:
-/*
-{ "api" : "passenger",
-  "application" : {
-      "client_id" : "w3bW7HyMjz",
-      "email" : "jack@gmail.com",
-      "name" : "Passenger App"
-    },
-  "passenger" : {
-      "name" : "Jack Sparrow"
-    },
-  "session" : {
-      "access_token" : "50dfb3d2c6c1215f8500001f",
-      "creation" : "2012-12-30 03:24:02",
-      "expires_in" : 1189769
-    },
-  "status" : "OK",
-  "status_code" : 200,
-  "version" : "1"
-}
-*/
+### API Info
+Returns a JSON object containing basic information about the current API session
+
+Example:
+```php
+<?php
 $tdispatch->api_info();
+```
+```json
+{
+    "api" : "passenger",
+    "application" : {
+        "client_id" : "w3bW7HyMjz",
+        "email" : "jack@gmail.com",
+        "name" : "Passenger App"
+    },
+    "passenger" : {
+        "name" : "Jack Sparrow"
+    },
+    "session" : {
+        "access_token" : "50dfb3d2c6c1215f8500001f",
+        "creation" : "2012-12-30 03:24:02",
+        "expires_in" : 1189769
+    },
+    "status" : "OK",
+    "status_code" : 200,
+    "version" : "1"
+}
+```
 
-/* END - API FUNCTIONS */
+## Account Functions
+### Create Account
+
+```php
+<?php
+/**
+ * Creates new passenger's account and does sign in after that
+ * Takes in an array of information of the following format
+ * Array (
+ *     "first_name" => "James",
+ *     "last_name" => "Moriarty",
+ *     "email" => "jmoriarty@tdispatch.com",
+ *     "phone" => "+380632592471",
+ *     "password" => "Sherlock_MustD!e"
+ * );
+ *
+ * @param array Passenger information array
+ * @return object JSON object containing API response body
+ */
+ function Account_create($passenger)
+```
 
 
-/* ACCOUNT FUNCTIONS */
-
-/* Account_create()
-* Creates new passenger's account and does sign in after that
-* @param (array) passenger information
-* example:
-    $passenger = array(
-        "first_name"=> "James",
-        "last_name"=>  "Moriarty",
-        "email"=>  "jmoriarty@tdispatch.com",
-        "phone"=>  "+380632592471",
-        "password"=>  "Sherlock_MustD!e"
-    );
-* @return (object) json object
-    If successful, this method returns a response body with the following structure:
-    {
-        "passenger": { //(object) Object with newly created passenger
-        "pk": "516feb1c2769a156bb5e5008", //Passenger unique id
-        "access_token": "51714d8e2769a10688e125ad" //Access token that can be used for further API calls //can obtain in $tdispatch->getToken();
-        },
-        "status": "OK",//
-        "status_code": 200 //
-    }
-*/
-//example
-$tdispatch->Account_create($passenger);
+Example response
+```json
+{
+    "passenger": {
+        "pk": "516feb1c2769a156bb5e5008",
+        "access_token": "51714d8e2769a10688e125ad"
+    },
+    "status": "OK",
+    "status_code": 200
+}
+```
 
 
 
@@ -910,3 +915,4 @@ example:
 $tdispatch->Drivers_nearby($limit, $location, $radius, $offset);
 
 /* END - DRIVERS  FUNCTIONS */
+```

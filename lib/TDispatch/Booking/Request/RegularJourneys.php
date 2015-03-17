@@ -19,6 +19,10 @@
  ******************************************************************************
 */
 
+namespace TDispatch\Booking\Request;
+
+use TDispatch\Booking\TDispatch as TDispatch;
+
 class RegularJourneys {
 	// dummy
 

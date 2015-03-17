@@ -19,45 +19,7 @@
  ******************************************************************************
 */
 
-if (!isset($_SESSION)) {
-    @session_start();
-}
-
-
-// Check for the required json and curl extensions, the TDispatch APIs PHP
-// won't function without them.
-if (!function_exists('curl_init')) {
-    throw new Exception('TDispatch PHP API Client requires the CURL PHP extension');
-}
-
-if (!function_exists('json_decode')) {
-    throw new Exception('TDispatch PHP API Client requires the JSON PHP extension');
-}
-
-if (!function_exists('http_build_query')) {
-    throw new Exception('TDispatch PHP API Client requires http_build_query()');
-}
-
-if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
-    date_default_timezone_set('UTC');
-}
-
-// hack around with the include paths a bit so the library 'just works'
-set_include_path(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . PATH_SEPARATOR . get_include_path());
-
-
-
-require_once 'oauth.php';
-require_once 'curl.php';
-require_once 'api.php';
-require_once 'bookings.php';
-require_once 'account.php';
-require_once 'location_search.php';
-require_once 'fare_calculation.php';
-require_once 'vehicles.php';
-require_once 'drivers.php';
-
-require_once 'config.php';
+namespace TDispatch\Booking;
 
 class TDispatch {
 
