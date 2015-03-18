@@ -58,7 +58,7 @@ class TDispatch {
 
         $this->baseURL = Config::getApiBaseUrl();
 
-        $this->oauth = new Message\OAuth($this, $this->api_key, $this->api_cliente_id, $this->api_secret);
+        $this->oauth = new OAuth($this, $this->api_key, $this->api_cliente_id, $this->api_secret);
         $this->booking = new Message\Bookings;
         $this->accounts = new Message\Account;
         $this->location = new Message\LocationSearch;

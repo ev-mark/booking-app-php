@@ -19,9 +19,7 @@
  ******************************************************************************
 */
 
-namespace TDispatch\Booking\Message;
-
-use TDispatch\Booking\TDispatch as TDispatch;
+namespace TDispatch\Booking;
 
 class OAuth {
 

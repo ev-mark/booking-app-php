@@ -19,7 +19,7 @@
  ******************************************************************************
 */
 
-namespace TDispatch\Booking\Message;
+namespace TDispatch\Booking;
 
 class CURL {
 
