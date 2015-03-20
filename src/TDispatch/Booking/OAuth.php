@@ -68,11 +68,11 @@ class OAuth {
         if ($anonimously) {
             $buildparams["grant_type"] = "anonymous";
             $buildparams["response_format"] = "json";
-            $databody = json_encode(array());
+            $databody = http_build_query(array());
         } else {
             $buildparams["grant_type"] = "user";
             $buildparams["response_format"] = "json";
-            $databody = json_encode(array("username" => $CLUsername, "password" => $CLPassword));
+            $databody = http_build_query(array("username" => $CLUsername, "password" => $CLPassword));
         }
         //TD url
         $url = $this->url . "auth?" . http_build_query($buildparams);
@@ -116,7 +116,7 @@ class OAuth {
                 curl_setopt($token, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($token, CURLOPT_URL, $url);
                 curl_setopt($token, CURLOPT_POST, count($data));
-                curl_setopt($token, CURLOPT_POSTFIELDS, json_encode($data));
+                curl_setopt($token, CURLOPT_POSTFIELDS, http_build_query($data));
                 curl_setopt($token, CURLOPT_SSL_VERIFYPEER, false);
 
                 //Execute post
