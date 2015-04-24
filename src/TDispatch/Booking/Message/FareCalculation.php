@@ -37,7 +37,8 @@ class FareCalculation extends Message {
             $dataSend['way_points'] = $waypoints;
         }
 
-        return $this->request($this->makeUrl("locations/fare"), $dataSend);
+        $response = $this->request($this->makeUrl("locations/fare"), $dataSend);
+        $response["fare"]["fare_narrative"] = json_decode($response["fare"]["fare_narrative"], true);
     }
 
 }
