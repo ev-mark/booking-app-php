@@ -39,6 +39,8 @@ class FareCalculation extends Message {
 
         $response = $this->request($this->makeUrl("locations/fare"), $dataSend);
         $response["fare"]["fare_narrative"] = json_decode($response["fare"]["fare_narrative"], true);
+
+        return $response;
     }
 
 }
