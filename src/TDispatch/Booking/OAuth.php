@@ -29,17 +29,25 @@ class OAuth {
     public $url;
     public $callback_url;
     public $access_token;
+    public $auth_code;
 
-    public function __construct(TDispatch $td, $key, $client_id, $secret, $callback_url = NULL) {
+    public function __construct(TDispatch $td, $key, $client_id, $secret, $auth_code, $access_token, $callback_url = NULL) {
         $this->url = $td->getFullOAuthUrl();
         $this->key = $key;
         $this->client_id = $client_id;
         $this->secret = $secret;
+        $this->auth_code = $auth_code;
         $this->callback_url = $callback_url;
     }
 
     public function getAccessToken(TDispatch $td) {
+
+        if (isset($this->access_token)) {
+            return $this->access_token;
+        }
+
         //If is the first time or not have session, do authenticate anonimously
+
         if(!isset($_SESSION['TDISPATCH'])) {
             $this->obtainAutorizationCode($td);
         }

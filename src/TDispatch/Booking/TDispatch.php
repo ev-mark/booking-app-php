@@ -26,8 +26,10 @@ use TDispatch\Booking\Message as Message;
 class TDispatch {
 
     public $api_key;
-    public $api_cliente_id;
+    public $api_client_id;
     public $api_secret;
+    public $auth_code;
+    public $access_token;
     public $getHomeUrl;
     public $debug;
     public $resetPasswordCallbackPage;
@@ -45,12 +47,14 @@ class TDispatch {
     public $lastErrorCode;
 
     /* API FUNCTIONS */
-    function __construct() {
+    public function __construct() {
 
         $apiConfig = array();
         $this->api_key = Config::getFleetApiKey();
-        $this->api_cliente_id = Config::getApiClientId();
+        $this->api_client_id = Config::getApiClientId();
         $this->api_secret = Config::getApiSecret();
+        $this->auth_code = Config::getAuthCode();
+        $this->access_token = Config::getAccessToken();
 
         $this->getHomeUrl = Config::getHomeUrl();
         $this->debug = Config::isDebug();
@@ -58,12 +62,14 @@ class TDispatch {
 
         $this->baseURL = Config::getApiBaseUrl();
 
-        $this->oauth = new OAuth($this, $this->api_key, $this->api_cliente_id, $this->api_secret);
+        $this->connection = new Config::$connectionClass;
+
+        $this->oauth = new OAuth($this, $this->api_key, $this->api_client_id, $this->api_secret, $this->auth_code, $this->access_token);
         $this->booking = new Message\Bookings;
         $this->accounts = new Message\Account;
         $this->location = new Message\LocationSearch;
-        $this->fareCalculation = new Message\FareCalculation;
-        $this->vehicles = new Message\Vehicles;
+        $this->fareCalculation = new Message\FareCalculation($this);
+        $this->vehicles = new Message\Vehicles($this);
         $this->drivers = new Message\Drivers;
 
         $this->getToken();
@@ -78,7 +84,7 @@ class TDispatch {
     }
 
     public function getClientId() {
-        return $this->api_cliente_id;
+        return $this->api_client_id;
     }
 
     public function getFullApiUrl() {
@@ -244,27 +250,20 @@ class TDispatch {
 
     /* END - LOCATION FUNCTIONS */
 
-
-
-    /* FareCalculation FUNCTIONS */
-    /*
-     * FareCalculation_fare()
+    /**
+     * calculateFare()
      * Searches for locations and returns a list of them. Can be called anonymously
-     * @param $pickup location for pickup. Required
-     * example: $pickup = array("lat"=> 52.12588,"lng"=> 11.61150);
-     * @param $dropoff location for dropoff. Required
-     * example: $dropoff = array("lat"=> 52.5373399193,"lng"=> 13.378729824);
-     * @param $waypoints location for waypoints. Optional
-     * example: $waypoints = array(array("lat"=> 52.5373399193,"lng"=> 13.378729824),array("lat"=> 52.5373399193,"lng"=> 13.378729824)...);
-     * @return (object) json object
+     * @param int $pickupTime timestamp for when pickup will be made
+     * @param array $pickup location for pickup. in format: array("lat"=> 52.12588,"lng"=> 11.61150);
+     * @param array $dropoff location for dropoff. same format.
+     * @param string $vehicleType private key of the type of vehicle requested (can be found using listVehicles function)
+     * @param array $waypoints location for waypoints. array of locations in above format. optional.
+     * @return array Array with results
      */
 
-    public function FareCalculation_fare($pickup_postcode, $dropoff_postcode, $pickup_time, $pickup = array(), $dropoff = array(), $vehicle_type='', $waypoints = array()) {
-        return $this->fareCalculation->fare($this, $pickup_postcode, $dropoff_postcode,$pickup_time, $pickup, $dropoff, $vehicle_type, $waypoints);
+    public function calculateFare($pickupTime, $pickup, $dropoff, $vehicleType, $waypoints = array()) {
+        return $this->fareCalculation->calculateFare($pickupTime, $pickup, $dropoff, $vehicleType, $waypoints);
     }
-
-    /* END - FareCalculation FUNCTIONS */
-
 
     /* BOOKINGS FUNCTIONS */
     /*
@@ -448,20 +447,17 @@ class TDispatch {
 
     /* END - BOOKINGS FUNCTIONS */
 
-    /* VEHICLE  FUNCTIONS */
-    /*
-     * Vehicles_list()
-     * Returns list of available office's vehicle types. Can be called anonymously
-     * @param $limit Limit number of results. Optional (limited to 4)
-     * @return (object) json object
+    /**
+     * listVehicles
+     * Returns office's list of available vehicle types. Can be called anonymously
+     * @param int $limit Limit number of results. Optional
+     * @return array Array containing vehicle primary keys and descriptions
      *
      */
 
-    public function Vehicles_list($limit = 4) {
-        return $this->vehicles->vehicles_list($this, $limit);
+    public function listVehicles($limit = null) {
+        return $this->vehicles->getTypes($limit);
     }
-
-    /* END - VEHICLE  FUNCTIONS */
 
     /* DRIVERS  FUNCTIONS */
     /*
@@ -481,13 +477,7 @@ class TDispatch {
 
     /* END - DRIVERS  FUNCTIONS */
 
-
-
-
-
-    /*  ---  Tratamento de erros ---- */
-
-    //put your code here
+    /* Error Handling Function */
     public function setError($result) {
         $this->lastErrorMsg = null;
         $this->lastErrorCode = null;

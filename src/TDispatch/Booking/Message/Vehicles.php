@@ -23,30 +23,16 @@ namespace TDispatch\Booking\Message;
 
 use TDispatch\Booking\TDispatch as TDispatch;
 
-class Vehicles {
+class Vehicles extends Message {
 
-    public function vehicles_list(TDispatch $td, $limit = 4) {
-        $data = array(
-            "access_token" => $td->getToken()
-        );
+    public function getTypes($limit = null) {
 
-        $url = $td->getFullApiUrl() . 'vehicletypes?' . http_build_query($data);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($ch);
-        $res = json_decode($result, true);
-        $info = curl_getinfo($ch);
-        curl_close($ch);
-
-        if (!isset($res['status']) || $res['status'] !== 'OK') {
-            $td->setError($res);
-            return false;
+        $result = $this->request($this->makeUrl("vehicletypes"));
+        if ($limit) {
+            return array_slice($result['vehicle_types'], 0, $limit);
+        } else {
+            return $result["vehicle_types"];
         }
-
-        return array_slice($res['vehicle_types'], 0, $limit);
     }
 
 }

@@ -26,8 +26,10 @@ class Config {
 	private static $fleetApiKey	= null;
 	private static $apiClientId	= null;
 	private static $apiSecret	= null;
+	private static $authCode    = null;
+	private static $accessToken = null;
 
-	private static $homeUrl		= 'http://localhost/';	 // URL of your website this scripts are hosted on, i.e. https://yourwebsite.com/
+	private static $homeUrl		= "";	 // URL of your website this scripts are hosted on, i.e. https://yourwebsite.com/
 	private static $debug 		= false;
 
 
@@ -36,6 +38,8 @@ class Config {
 
 	private static $apiBaseUrl 		  = 'https://api.tdispatch.com/';
 	private static $resetPasswordCallbackPage = 'reset-password';
+
+	public static $connectionClass = "\\TDispatch\\Booking\\Connection\\Curl";
 
 
 	public static function validateConfig() {
@@ -58,6 +62,12 @@ class Config {
 	}
 	public static function getApiSecret() {
 		return self::$apiSecret;
+	}
+	public static function getAuthCode() {
+		return self::$authCode;
+	}
+	public static function getAccessToken() {
+		return self::$accessToken;
 	}
 	public static function getHomeUrl() {
 		return self::$homeUrl;
